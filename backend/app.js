@@ -10,7 +10,11 @@ const commentRoutes = require("./routes/commentRoutes");
 const authMiddleware = require("./middleware/authMiddleware");
 
 const app = express();
-const port = 3000;
+const port = 5000;
+
+// Cors para conectar front con back
+const cors = require("cors");
+app.use(cors());
 
 // Middleware para usar JSON
 app.use(express.json());

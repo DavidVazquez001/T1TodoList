@@ -18,7 +18,9 @@ const authMiddleware = (req, res, next) => {
 
     next();
   } catch (error) {
-    res.status(403).json({ message: "Token no valido" });
+    res
+      .status(403)
+      .json({ message: "Token no válido, por favor inicia sesión nuevamente" });
   }
 };
 

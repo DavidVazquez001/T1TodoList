@@ -55,4 +55,25 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// Nueva ruta para verificar el token
+router.get("/verify-token", (req, res) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res
+      .status(401)
+      .json({ message: "Token no proporcionado o inválido" });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  try {
+    // Verificar si el token es válido
+    jwt.verify(token, JWT_SECRET);
+    res.status(200).json({ message: "Token válido" });
+  } catch (error) {
+    res.status(403).json({ message: "Token no válido o expirado" });
+  }
+});
+
 module.exports = router;
