@@ -1,4 +1,3 @@
-// frontend/src/components/TaskList.jsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -13,9 +12,14 @@ const TaskList = () => {
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState("");
   const [editingTask, setEditingTask] = useState(null);
+  const [username, setUsername] = useState(""); // Para mostrar el nombre del usuario logueado
 
   useEffect(() => {
     fetchTasks();
+    const storedUsername = localStorage.getItem("username");
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
   }, []);
 
   const fetchTasks = async () => {
@@ -37,7 +41,6 @@ const TaskList = () => {
       const data = await response.json();
       setTasks(data);
 
-      // Cargar comentarios y subtareas para cada tarea
       for (const task of data) {
         const commentsResponse = await fetch(
           `http://localhost:5000/comments/${task._id}`,
@@ -95,15 +98,13 @@ const TaskList = () => {
 
       if (response.ok) {
         const updatedTask = await response.json();
-
-        // Preservar comentarios y subtareas existentes en la tarea
         setTasks((prevTasks) =>
           prevTasks.map((task) =>
             task._id === taskId
               ? {
                   ...updatedTask.task,
-                  comments: task.comments, // Mantener comentarios actuales
-                  subtasks: task.subtasks, // Mantener subtareas actuales
+                  comments: task.comments,
+                  subtasks: task.subtasks,
                 }
               : task
           )
@@ -125,7 +126,6 @@ const TaskList = () => {
 
       if (!response.ok) throw new Error("Error al eliminar la tarea");
 
-      // Eliminar la tarea del estado local
       setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
     } catch (error) {
       setError(error.message);
@@ -164,7 +164,6 @@ const TaskList = () => {
         throw new Error("Error al eliminar el comentario");
       }
 
-      // Actualiza el estado solo si la eliminación fue exitosa
       setTasks((prevTasks) => {
         return prevTasks.map((task) =>
           task._id === taskId
@@ -201,7 +200,6 @@ const TaskList = () => {
     );
   };
 
-  // Funciones para subtareas
   const handleAddSubtask = (taskId, newSubtask) => {
     setTasks((prevTasks) =>
       prevTasks.map((task) =>
@@ -251,7 +249,6 @@ const TaskList = () => {
     }
   };
 
-  // Función para cambiar el estado de una subtarea
   const handleToggleSubtaskStatus = async (subtask) => {
     const token = localStorage.getItem("token");
     const newStatus =
@@ -279,7 +276,6 @@ const TaskList = () => {
 
       const data = await response.json();
 
-      // Actualizar el estado del frontend solo si la operación fue exitosa
       setTasks((prevTasks) =>
         prevTasks.map((task) => ({
           ...task,
@@ -328,14 +324,15 @@ const TaskList = () => {
 
   return (
     <div>
-      <h1 className="text-xl font-bold mb-4">Mis Tareas</h1>
-      {error && <p className="text-red-500">{error}</p>}
+      <h1 className="text-2xl font-bold mb-4 text-center">Mis Tareas</h1>
 
-      <CreateTaskForm onTaskCreated={handleTaskCreated} />
+      <div className="flex justify-center items-center ">
+        <CreateTaskForm onTaskCreated={handleTaskCreated} />
+      </div>
 
-      <ul className="space-y-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
         {tasks.map((task) => (
-          <li key={task._id} className="border p-4 rounded">
+          <div key={task._id} className="border p-4 rounded bg-white shadow-lg">
             {editingTask && editingTask._id === task._id ? (
               <EditTaskForm
                 task={editingTask}
@@ -344,60 +341,57 @@ const TaskList = () => {
               />
             ) : (
               <>
-                <h2 className="font-bold">{task.title}</h2>
-                <p>{task.description}</p>
-                <p className="text-gray-500">Estado: {task.status}</p>
+                <h2 className="font-bold text-lg">{task.title}</h2>
+                <p className="text-gray-700 mb-2">{task.description}</p>
+                <p className="text-sm text-gray-500">Estado: {task.status}</p>
 
-                <button
-                  onClick={() =>
-                    handleUpdateTask(task._id, {
-                      status:
-                        task.status === "pendiente"
-                          ? "completada"
-                          : "pendiente",
-                    })
-                  }
-                  className="bg-yellow-500 text-white p-1 mr-2"
-                >
-                  {task.status === "pendiente" ? "Completar" : "Revertir"}
-                </button>
+                <div className="mt-4 flex flex-col space-y-2">
+                  <button
+                    onClick={() =>
+                      handleUpdateTask(task._id, {
+                        status:
+                          task.status === "pendiente"
+                            ? "completada"
+                            : "pendiente",
+                      })
+                    }
+                    className="bg-yellow-500 hover:bg-yellow-600 text-white py-1 rounded"
+                  >
+                    {task.status === "pendiente" ? "Completar" : "Revertir"}
+                  </button>
 
-                <button
-                  onClick={() => handleEditTask(task)}
-                  className="bg-blue-500 text-white p-1 mr-2"
-                >
-                  Editar
-                </button>
+                  <button
+                    onClick={() => handleEditTask(task)}
+                    className="bg-blue-500 hover:bg-blue-600 text-white py-1 rounded"
+                  >
+                    Editar
+                  </button>
 
-                <button
-                  onClick={() => handleDeleteTask(task._id)}
-                  className="bg-red-500 text-white p-1"
-                >
-                  Eliminar
-                </button>
-
-                <CommentForm
-                  taskId={task._id}
-                  onCommentAdded={(comment) =>
-                    handleCommentAdded(task._id, comment)
-                  }
-                />
-
-                <div className="mt-2">
-                  <h3 className="font-semibold">Comentarios:</h3>
-                  {(task.comments || []).map((comment) => (
-                    <CommentItem
-                      key={comment._id}
-                      comment={comment}
-                      onDelete={(commentId) =>
-                        handleDeleteComment(commentId, task._id)
-                      }
-                      onUpdate={(updatedComment) =>
-                        handleCommentUpdated(updatedComment)
-                      }
-                    />
-                  ))}
+                  <button
+                    onClick={() => handleDeleteTask(task._id)}
+                    className="bg-red-500 hover:bg-red-600 text-white py-1 rounded"
+                  >
+                    Eliminar
+                  </button>
                 </div>
+
+                {/* Subtareas */}
+                {task.subtasks && task.subtasks.length > 0 && (
+                  <div className="mt-6">
+                    <h3 className="font-semibold text-gray-800">Subtareas:</h3>
+                    {task.subtasks.map((subtask) => (
+                      <SubtaskItem
+                        key={subtask._id}
+                        subtask={subtask}
+                        onUpdate={handleUpdateSubtask}
+                        onStatusChange={handleToggleSubtaskStatus}
+                        onDelete={(subtaskId) =>
+                          handleDeleteSubtask(subtaskId, task._id)
+                        }
+                      />
+                    ))}
+                  </div>
+                )}
 
                 <SubtaskForm
                   taskId={task._id}
@@ -406,25 +400,38 @@ const TaskList = () => {
                   }
                 />
 
-                <div className="mt-2">
-                  <h3 className="font-semibold">Subtareas:</h3>
-                  {(task.subtasks || []).map((subtask) => (
-                    <SubtaskItem
-                      key={subtask._id}
-                      subtask={subtask}
-                      onUpdate={handleUpdateSubtask}
-                      onStatusChange={handleToggleSubtaskStatus}
-                      onDelete={(subtaskId) =>
-                        handleDeleteSubtask(subtaskId, task._id)
-                      }
-                    />
-                  ))}
-                </div>
+                {/* Comentarios */}
+                {task.comments && task.comments.length > 0 && (
+                  <div className="mt-6">
+                    <h3 className="font-semibold text-gray-800">
+                      Comentarios:
+                    </h3>
+                    {task.comments.map((comment) => (
+                      <CommentItem
+                        key={comment._id}
+                        comment={comment}
+                        onDelete={(commentId) =>
+                          handleDeleteComment(commentId, task._id)
+                        }
+                        onUpdate={(updatedComment) =>
+                          handleCommentUpdated(updatedComment)
+                        }
+                      />
+                    ))}
+                  </div>
+                )}
+
+                <CommentForm
+                  taskId={task._id}
+                  onCommentAdded={(comment) =>
+                    handleCommentAdded(task._id, comment)
+                  }
+                />
               </>
             )}
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

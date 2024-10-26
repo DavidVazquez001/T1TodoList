@@ -32,9 +32,8 @@ const CreateTaskForm = ({ onTaskCreated }) => {
 
       const data = await response.json();
       setSuccess("Tarea creada exitosamente");
-      onTaskCreated(data.task); // Notificar al componente padre sobre la nueva tarea
+      onTaskCreated(data.task);
 
-      // Limpiar el formulario
       setTitle("");
       setDescription("");
     } catch (error) {
@@ -43,9 +42,15 @@ const CreateTaskForm = ({ onTaskCreated }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 mb-6">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 p-6 bg-white rounded-lg shadow-md border border-gray-200 w-full md:w-1/2 lg:w-1/3 justify-center items-center"
+    >
       <div>
-        <label htmlFor="title" className="block">
+        <label
+          htmlFor="title"
+          className="block text-neutral-800 font-semibold mb-1"
+        >
           Título
         </label>
         <input
@@ -54,11 +59,15 @@ const CreateTaskForm = ({ onTaskCreated }) => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
-          className="border p-2 w-full"
+          placeholder="Ingresa el título de la tarea"
+          className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:border-blue-500"
         />
       </div>
       <div>
-        <label htmlFor="description" className="block">
+        <label
+          htmlFor="description"
+          className="block text-neutral-800 font-semibold mb-1"
+        >
           Descripción
         </label>
         <textarea
@@ -66,12 +75,16 @@ const CreateTaskForm = ({ onTaskCreated }) => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
-          className="border p-2 w-full"
+          placeholder="Ingresa la descripción de la tarea"
+          className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:border-blue-500"
         />
       </div>
       {error && <p className="text-red-500">{error}</p>}
       {success && <p className="text-green-500">{success}</p>}
-      <button type="submit" className="bg-blue-500 text-white p-2 ">
+      <button
+        type="submit"
+        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full mt-4 transition duration-200"
+      >
         Crear Tarea
       </button>
     </form>

@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation"; // Usar el hook useRouter para redirigir
+import { useRouter } from "next/navigation";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const router = useRouter(); // Inicializar el router
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,21 +35,17 @@ const LoginForm = () => {
       // Almacenar el token en localStorage
       localStorage.setItem("token", data.token);
 
-      // Limpiar el formulario
-      setUsername("");
-      setPassword("");
-
       // Redirigir a la página de tareas
-      router.push("/task"); // Cambia esta ruta si la página de tareas tiene otro nombre
+      router.push("/task");
     } catch (error) {
       setError(error.message);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4 ">
       <div>
-        <label htmlFor="username" className="block">
+        <label htmlFor="username" className="block font-semibold">
           Nombre de Usuario
         </label>
         <input
@@ -58,11 +54,11 @@ const LoginForm = () => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
-          className="border p-2 w-full"
+          className="border p-2 w-full rounded border-neutral-500"
         />
       </div>
       <div>
-        <label htmlFor="password" className="block">
+        <label htmlFor="password" className="block font-semibold">
           Contraseña
         </label>
         <input
@@ -71,13 +67,24 @@ const LoginForm = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="border p-2 w-full"
+          className="border p-2 w-full rounded border-neutral-500"
         />
       </div>
       {error && <p className="text-red-500">{error}</p>}
       {success && <p className="text-green-500">{success}</p>}
-      <button type="submit" className="bg-blue-500 text-white p-2">
+      <button
+        type="submit"
+        className="bg-blue-500 text-white p-2 rounded w-full hover:bg-blue-600 transition"
+      >
         Iniciar Sesión
+      </button>
+      {/* Botón para regresar al home */}
+      <button
+        type="button"
+        onClick={() => router.push("/")}
+        className="bg-gray-500 text-white p-2 rounded w-full mt-2 hover:bg-gray-600 transition"
+      >
+        Volver al Home
       </button>
     </form>
   );

@@ -19,12 +19,11 @@ const SubtaskItem = ({ subtask, onUpdate, onDelete, onStatusChange }) => {
   };
 
   const handleStatusToggle = () => {
-    // Llamar a la función proporcionada para cambiar el estado
-    onStatusChange(subtask); // Asegurarse de pasar la subtarea completa
+    onStatusChange(subtask);
   };
 
   return (
-    <div className="border p-2 mt-1 rounded">
+    <div className="p-3 bg-gray-300 rounded-md shadow-sm mb-4">
       {isEditing ? (
         <>
           <input
@@ -38,42 +37,50 @@ const SubtaskItem = ({ subtask, onUpdate, onDelete, onStatusChange }) => {
             onChange={(e) => setEditedDescription(e.target.value)}
             className="border p-2 w-full"
           />
-          <button
-            onClick={handleUpdate}
-            className="bg-blue-500 text-white p-1 mr-2"
-          >
-            Actualizar
-          </button>
-          <button
-            onClick={() => setIsEditing(false)}
-            className="bg-gray-500 text-white p-1"
-          >
-            Cancelar
-          </button>
+          <div className="flex justify-end space-x-2 mt-2">
+            <button
+              onClick={handleUpdate}
+              className="bg-blue-500 text-white p-1 rounded"
+            >
+              Actualizar
+            </button>
+            <button
+              onClick={() => setIsEditing(false)}
+              className="bg-gray-500 text-white p-1 rounded"
+            >
+              Cancelar
+            </button>
+          </div>
         </>
       ) : (
         <>
           <h3 className="font-semibold">{subtask.title}</h3>
           <p>{subtask.description}</p>
           <p className="text-gray-500">Estado: {subtask.status}</p>
-          <button
-            onClick={() => setIsEditing(true)}
-            className="bg-yellow-500 text-white p-1 mr-2"
-          >
-            Editar
-          </button>
-          <button
-            onClick={handleStatusToggle}
-            className="bg-green-500 text-white p-1 mr-2"
-          >
-            {subtask.status === "pendiente" ? "Completar" : "Revertir"}
-          </button>
-          <button
-            onClick={() => onDelete(subtask._id)}
-            className="bg-red-500 text-white p-1"
-          >
-            Eliminar
-          </button>
+          <div className="flex space-x-2 mt-2">
+            <button
+              onClick={() => setIsEditing(true)}
+              className="bg-yellow-500 text-white p-1 rounded"
+            >
+              Editar
+            </button>
+            <button
+              onClick={handleStatusToggle}
+              className={`${
+                subtask.status === "pendiente"
+                  ? "bg-green-500"
+                  : "bg-yellow-600"
+              } text-white p-1 rounded`}
+            >
+              {subtask.status === "pendiente" ? "Completar" : "Revertir"}
+            </button>
+            <button
+              onClick={() => onDelete(subtask._id)}
+              className="bg-red-500 text-white p-1 rounded"
+            >
+              Eliminar
+            </button>
+          </div>
         </>
       )}
     </div>

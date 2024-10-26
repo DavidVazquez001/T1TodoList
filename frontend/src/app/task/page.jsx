@@ -10,7 +10,7 @@ const TasksPage = () => {
     <div className="flex justify-center items-start min-h-screen p-4">
       {" "}
       {/* Cambiar h-screen a min-h-screen */}
-      <div className="w-full max-w-md p-4 border rounded-lg shadow-lg">
+      <div className="w-full p-4 border rounded-lg shadow-lg bg-slate-400">
         {" "}
         {/* Mantener la tarjeta sin scroll */}
         <TaskList />

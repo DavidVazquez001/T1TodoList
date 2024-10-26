@@ -37,75 +37,53 @@ const CommentItem = ({ comment, onDelete, onUpdate }) => {
     }
   };
 
-  //   const handleDelete = async () => {
-  //     const token = localStorage.getItem("token");
-
-  //     try {
-  //       console.log("Attempting to delete comment with ID:", comment._id); // Depuración
-  //       const response = await fetch(
-  //         `http://localhost:5000/comments/${comment._id}`,
-  //         {
-  //           method: "DELETE",
-  //           headers: {
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         }
-  //       );
-
-  //       if (!response.ok) {
-  //         const errorData = await response.json();
-  //         console.log("Failed to delete comment:", errorData); // Depuración
-  //         throw new Error("Error al eliminar el comentario");
-  //       }
-
-  //       onDelete(comment._id); // Notificar al componente padre para eliminar el comentario
-  //     } catch (err) {
-  //       console.error("Error while deleting comment:", err); // Mostrar el error en la consola
-  //       setError(err.message);
-  //     }
-  //   };
-
   const handleDelete = () => {
-    onDelete(comment._id); // Notificar al componente padre para eliminar el comentario
+    onDelete(comment._id);
   };
 
   return (
-    <div className="border p-2 mt-1 rounded">
+    <div className="border p-4 rounded-lg bg-gray-300 shadow-sm mb-4">
       {isEditing ? (
         <>
           <textarea
             value={editedText}
             onChange={(e) => setEditedText(e.target.value)}
-            className="border p-2 w-full"
-            id="comment-edit" // Añadir id para evitar advertencias
-            name="comment-edit" // Añadir name para evitar advertencias
+            className="border p-2 w-full mb-2 rounded"
+            placeholder="Edita tu comentario..."
           />
           {error && <p className="text-red-500">{error}</p>}
-          <button
-            onClick={handleUpdate}
-            className="bg-blue-500 text-white p-1 mr-2"
-          >
-            Actualizar
-          </button>
-          <button
-            onClick={() => setIsEditing(false)}
-            className="bg-gray-500 text-white p-1"
-          >
-            Cancelar
-          </button>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={handleUpdate}
+              className="bg-blue-500 hover:bg-blue-600 text-white p-1 px-3 rounded"
+            >
+              Actualizar
+            </button>
+            <button
+              onClick={() => setIsEditing(false)}
+              className="bg-gray-500 hover:bg-gray-600 text-white p-1 px-3 rounded"
+            >
+              Cancelar
+            </button>
+          </div>
         </>
       ) : (
         <>
-          <p>{comment.text}</p>
-          <button
-            onClick={() => setIsEditing(true)}
-            className="bg-yellow-500 text-white p-1 mr-2"
-          >
-            Editar
-          </button>
-          <button onClick={handleDelete} className="bg-red-500 text-white p-1">
-            Eliminar
-          </button>
+          <p className="text-gray-800">{comment.text}</p>
+          <div className="flex items-center space-x-2 mt-3">
+            <button
+              onClick={() => setIsEditing(true)}
+              className="bg-yellow-500 hover:bg-yellow-600 text-white p-1 px-3 rounded"
+            >
+              Editar
+            </button>
+            <button
+              onClick={handleDelete}
+              className="bg-red-500 hover:bg-red-600 text-white p-1 px-3 rounded"
+            >
+              Eliminar
+            </button>
+          </div>
           {error && <p className="text-red-500">{error}</p>}
         </>
       )}

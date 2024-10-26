@@ -31,7 +31,7 @@ const SubtaskForm = ({ taskId, onSubtaskAdded }) => {
       }
 
       const data = await response.json();
-      onSubtaskAdded(data.subtask); // Notificar al componente padre sobre la nueva subtarea
+      onSubtaskAdded(data.subtask);
 
       setSuccess("Subtarea creada exitosamente");
       setTitle("");
@@ -42,9 +42,13 @@ const SubtaskForm = ({ taskId, onSubtaskAdded }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 p-4 bg-slate-100 rounded shadow my-2"
+    >
+      <h4 className="font-semibold mb-2 text-gray-800">Agregar Subtarea</h4>
       <div>
-        <label htmlFor="title" className="block">
+        <label htmlFor="title" className="block text-gray-700">
           Título
         </label>
         <input
@@ -53,11 +57,11 @@ const SubtaskForm = ({ taskId, onSubtaskAdded }) => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
-          className="border p-2 w-full"
+          className="border p-2 w-full rounded"
         />
       </div>
       <div>
-        <label htmlFor="description" className="block">
+        <label htmlFor="description" className="block text-gray-700">
           Descripción
         </label>
         <textarea
@@ -65,12 +69,15 @@ const SubtaskForm = ({ taskId, onSubtaskAdded }) => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
-          className="border p-2 w-full"
+          className="border p-2 w-full rounded"
         />
       </div>
       {error && <p className="text-red-500">{error}</p>}
       {success && <p className="text-green-500">{success}</p>}
-      <button type="submit" className="bg-blue-500 text-white p-2">
+      <button
+        type="submit"
+        className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded"
+      >
         Agregar Subtarea
       </button>
     </form>
